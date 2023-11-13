@@ -52,7 +52,7 @@ foreach ($cards_json as $card) {
 // exit;
 
 //TODO: double-check docs to see if sorting is necessary
-//usort($listCards, card_position_sort);
+// usort($listCards, card_position_sort);
 
 $output = array();
 foreach ($list_names as $list_id => $list_name) {
@@ -83,31 +83,31 @@ foreach ($list_names as $list_id => $list_name) {
 		}
 	}
 
-	if (sizeof($lists[$list_id]) == 0) {
-		continue;
-	}
+	if (isset($lists[$list_id])) {
 
-	foreach ($lists[$list_id] as $card) {
+		foreach ($lists[$list_id] as $card) {
 
-		$output = array();
-		$output['list_name'] = $list_names[$list_id];		
-	 	$output['card_name'] = $card['name'];
-	 	$output['card_desc'] = $card['desc'];
-	 	$output['labels'] = $card['labels'];
-		$output['attachments'] = $card['attachments'];
-	 	if (isset($card['pluginData'][0]['value'])) {
-			$card_fields = json_decode($card['pluginData'][0]['value'], TRUE);
-			$output['card_estimate'] = $card_fields['fields']['u6g4FEpY-jHCRmY'];
-	 	}
-	 	
- 		if (OUTPUT_CSV == TRUE) {
-			output_csv_card($output);
- 		}
- 		else {
-	 		output_txt_card($output);
- 		}
-	 	 	
-	}
+			$output = array();
+			$output['list_name'] = $list_names[$list_id];		
+			 $output['card_name'] = $card['name'];
+			 $output['card_desc'] = $card['desc'];
+			 $output['labels'] = $card['labels'];
+			$output['attachments'] = $card['attachments'];
+			 if (isset($card['pluginData'][0]['value'])) {
+				$card_fields = json_decode($card['pluginData'][0]['value'], TRUE);
+				$output['card_estimate'] = $card_fields['fields']['u6g4FEpY-jHCRmY'];
+			 }
+			 
+			 if (OUTPUT_CSV == TRUE) {
+				output_csv_card($output);
+			 }
+			 else {
+				 output_txt_card($output);
+			 }
+				  
+		}
+
+	} 
 	
 }
 
