@@ -169,16 +169,15 @@ function output_txt_card($output) {
 	if (sizeof($output['labels']) > 0) {
 		$labels_text = '';
 		foreach ($output['labels'] as $label) {
-			// echo 'label:"'.$label['name'].'"';
 			if ($label['name'] != '') {
-				$labels_text .= $label['name'];
+				$labels_text .= '#'.strtolower($label['name']);
 				if ($label != '' && ($label !== end($output['labels']))) {
-					$labels_text .= ', ';
+					$labels_text .= ' ';
 				}
 			}
 		}
 		if ($labels_text != '') {
-			echo '(_'.$labels_text.'_)'.PHP_EOL.PHP_EOL;
+			echo $labels_text.PHP_EOL.PHP_EOL;
 		}
 	}	
 
