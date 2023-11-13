@@ -1,12 +1,11 @@
 <?php
 // trello2docjira
 //
-// ignores any lists beginning with a hyphen (-)
-// turning off bold titles allows copy/paste in to JIRA easier;
-// this goes away if we import direct into JIRA
+// note: turning off bold titles allows copy/paste in to JIRA easier
 
 const OUTPUT_BOLD_TITLES = TRUE;
 const OUTPUT_CSV = FALSE;
+const SKIP_HYPHENS = FALSE;
 
 $H2_USED = FALSE;
 
@@ -62,7 +61,7 @@ foreach ($list_names as $list_id => $list_name) {
 
 	// skip list names that begin with a hyphen
 	if (($list_name == "") || 
-		  (strpos($list_name, '-') === 0)) {
+		  (SKIP_HYPHENS && (strpos($list_name, '-') === 0))) {
 		// DEBUG
 		//echo "Skipping ".$list_name."...\n";
 		continue;
@@ -95,6 +94,7 @@ foreach ($list_names as $list_id => $list_name) {
 	 	$output['card_name'] = $card['name'];
 	 	$output['card_desc'] = $card['desc'];
 	 	$output['labels'] = $card['labels'];
+		$output['attachments'] = $card['attachments'];
 	 	if (isset($card['pluginData'][0]['value'])) {
 			$card_fields = json_decode($card['pluginData'][0]['value'], TRUE);
 			$output['card_estimate'] = $card_fields['fields']['u6g4FEpY-jHCRmY'];
@@ -160,39 +160,45 @@ function output_txt_card($output) {
 		else {
 			echo '## ';
 		}
-		echo $output['card_name'];
+		echo $output['card_name'].PHP_EOL.PHP_EOL;
 	}
 	else {
-		echo $output['card_name'];
-
+		echo $output['card_name'].PHP_EOL.PHP_EOL;
 	}
-	echo "\n\n";
 
 	if (sizeof($output['labels']) > 0) {
 		$labels_text = '';
 		foreach ($output['labels'] as $label) {
-			// TODO: try adding colors; see: http://redcloth.org/hobix.com/textile/
-			$labels_text .= $label['name'];
-			if ($label != '' && ($label !== end($output['labels']))) {
-				$labels_text .= ', ';
+			// echo 'label:"'.$label['name'].'"';
+			if ($label['name'] != '') {
+				$labels_text .= $label['name'];
+				if ($label != '' && ($label !== end($output['labels']))) {
+					$labels_text .= ', ';
+				}
 			}
 		}
 		if ($labels_text != '') {
-			echo '(_'.$labels_text.'_)';
-			echo "\n\n";
+			echo '(_'.$labels_text.'_)'.PHP_EOL.PHP_EOL;
 		}
 	}	
 
-	if (isset($output['card_desc'])) {
+	if (isset($output['card_desc']) && $output['card_desc'] != '') {
 		// replace hyphen bullets with asterisks
-		echo $output['card_desc']."\n";			
-	}
-	
-	if (isset($output['card_estimate'])) {
-		echo "Estimate: ".$output['card_estimate']."\n";
+		echo $output['card_desc'].PHP_EOL.PHP_EOL;
 	}
 
-	echo "\n";
+	if (sizeof($output['attachments']) > 0) {
+		$attachments_text = '';
+		foreach ($output['attachments'] as $attachment) {
+			// $attachments_text .= $attachment['url'];
+			echo $attachment['url'].PHP_EOL;
+		}
+		echo PHP_EOL;
+	}
+
+	if (isset($output['card_estimate']) && $output['card_estimate'] != '') {
+		echo "Estimate: ".$output['card_estimate'].PHP_EOL;
+	}
 
 }
 
@@ -209,7 +215,7 @@ function output_csv_card($output) {
 	if ($output['card_estimate'] <> '') {
 		echo $output['card_estimate'];
 	}
-	echo "\n";
+	echo PHP_EOL;
 
 }
 ?>
