@@ -89,9 +89,9 @@ foreach ($list_names as $list_id => $list_name) {
 
 			$output = array();
 			$output['list_name'] = $list_names[$list_id];		
-			 $output['card_name'] = $card['name'];
-			 $output['card_desc'] = $card['desc'];
-			 $output['labels'] = $card['labels'];
+			$output['card_name'] = $card['name'];
+			$output['card_desc'] = $card['desc'];
+			$output['labels'] = $card['labels'];
 			$output['attachments'] = $card['attachments'];
 			 if (isset($card['pluginData'][0]['value'])) {
 				$card_fields = json_decode($card['pluginData'][0]['value'], TRUE);
