@@ -1,4 +1,4 @@
-<?
+<?php
 // trello2docjira
 //
 // ignores any lists beginning with a hyphen (-)
@@ -41,7 +41,7 @@ $cards_json = $json['cards'];
 $lists = array();
 foreach ($cards_json as $card) {
 	if ($card['closed'] <> 1) {
-		if ($lists[$card['idList']] === NULL) {
+		if (!isset($lists[$card['idList']])) {
 			$lists[$card['idList']] = array();
 		}
 		array_push($lists[$card['idList']], $card);
@@ -95,7 +95,7 @@ foreach ($list_names as $list_id => $list_name) {
 	 	$output['card_name'] = $card['name'];
 	 	$output['card_desc'] = $card['desc'];
 	 	$output['labels'] = $card['labels'];
-	 	if ($card['pluginData'][0]['value'] !== NULL) {
+	 	if (isset($card['pluginData'][0]['value'])) {
 			$card_fields = json_decode($card['pluginData'][0]['value'], TRUE);
 			$output['card_estimate'] = $card_fields['fields']['u6g4FEpY-jHCRmY'];
 	 	}
@@ -172,7 +172,7 @@ function output_txt_card($output) {
 		$labels_text = '';
 		foreach ($output['labels'] as $label) {
 			// TODO: try adding colors; see: http://redcloth.org/hobix.com/textile/
-			$labels_text .= $label[name];
+			$labels_text .= $label['name'];
 			if ($label != '' && ($label !== end($output['labels']))) {
 				$labels_text .= ', ';
 			}
@@ -183,12 +183,12 @@ function output_txt_card($output) {
 		}
 	}	
 
-	if ($output['card_desc'] <> '') {
+	if (isset($output['card_desc'])) {
 		// replace hyphen bullets with asterisks
 		echo $output['card_desc']."\n";			
 	}
 	
-	if ($output['card_estimate'] <> '') {
+	if (isset($output['card_estimate'])) {
 		echo "Estimate: ".$output['card_estimate']."\n";
 	}
 
