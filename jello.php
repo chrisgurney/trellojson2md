@@ -68,8 +68,8 @@ foreach ($list_names as $list_id => $list_name) {
 	};
 
 	// DEBUG
-  // echo $list_name."\n\n";
-  // continue;
+	// echo $list_name."\n\n";
+	// continue;
 
 	// treat list names that begin with * as heading 1
 	// TODO: think of less hacky way of doing this
