@@ -103,6 +103,8 @@ foreach ($list_names as $list_id => $list_name) {
 			 }
 			 else {
 				 output_txt_card($output);
+				 // TODO: output for single file mode only
+				 echo '---'.PHP_EOL.PHP_EOL;
 			 }
 				  
 		}
@@ -123,7 +125,7 @@ function output_txt_heading($output) {
 	else {
 		echo $output['list_name'];
 	}
- 	echo "\n\n";
+ 	echo PHP_EOL.PHP_EOL;
 
  	$H2_USED = FALSE;
 
@@ -135,7 +137,7 @@ function output_txt_title($output) {
 
 	if ($H2_USED) {
 		echo '---------------';	
-		echo "\n\n";
+		echo PHP_EOL.PHP_EOL;
 	}
 	
 	if (OUTPUT_BOLD_TITLES == TRUE) {
@@ -143,7 +145,7 @@ function output_txt_title($output) {
 	}
 	echo $output['list_name'];
 
- 	echo "\n\n";
+ 	echo PHP_EOL.PHP_EOL;
 
  	$H2_USED = TRUE;
 
@@ -153,18 +155,13 @@ function output_txt_card($output) {
 
 	global $H2_USED;
 
+	$txt_card_output = '';
+
 	if (OUTPUT_BOLD_TITLES == TRUE) {
-		if ($H2_USED) {
-			echo '## ';
-		}
-		else {
-			echo '## ';
-		}
-		echo $output['card_name'].PHP_EOL.PHP_EOL;
+		echo '## ';
 	}
-	else {
-		echo $output['card_name'].PHP_EOL.PHP_EOL;
-	}
+
+	echo $output['card_name'].PHP_EOL.PHP_EOL;
 
 	if (sizeof($output['labels']) > 0) {
 		$labels_text = '';
