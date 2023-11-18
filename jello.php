@@ -158,7 +158,7 @@ function output_txt_card($output) {
 	$txt_card_output = '';
 
 	if (OUTPUT_BOLD_TITLES == TRUE) {
-		echo '## ';
+		$txt_card_output .= '## ';
 	}
 
 	echo $output['card_name'].PHP_EOL.PHP_EOL;
@@ -174,44 +174,50 @@ function output_txt_card($output) {
 			}
 		}
 		if ($labels_text != '') {
-			echo $labels_text.PHP_EOL.PHP_EOL;
+			$txt_card_output .= $labels_text.PHP_EOL.PHP_EOL;
 		}
 	}	
 
 	if (isset($output['card_desc']) && $output['card_desc'] != '') {
 		// replace hyphen bullets with asterisks
-		echo $output['card_desc'].PHP_EOL.PHP_EOL;
+		$txt_card_output .= $output['card_desc'].PHP_EOL.PHP_EOL;
 	}
 
 	if (sizeof($output['attachments']) > 0) {
 		$attachments_text = '';
 		foreach ($output['attachments'] as $attachment) {
 			// $attachments_text .= $attachment['url'];
-			echo $attachment['url'].PHP_EOL;
+			$txt_card_output .= $attachment['url'].PHP_EOL;
 		}
-		echo PHP_EOL;
+		$txt_card_output .= PHP_EOL;
 	}
 
 	if (isset($output['card_estimate']) && $output['card_estimate'] != '') {
-		echo "Estimate: ".$output['card_estimate'].PHP_EOL;
+		$txt_card_output .= "Estimate: ".$output['card_estimate'].PHP_EOL;
 	}
+
+	echo $txt_card_output;
 
 }
 
 // TODO: add labels?
 function output_csv_card($output) {
 
-	echo "\"".$output['list_name']."\",";
-	echo "\"".$output['card_name']."\",";
-	echo "\"";
+	$csv_card_output = '';
+
+	$csv_card_output .= "\"".$output['list_name']."\",";
+	$csv_card_output .= "\"".$output['card_name']."\",";
+	$csv_card_output .= "\"";
 	if ($output['card_desc'] <> '') {
-		echo $output['card_desc'];			
+		$csv_card_output .= $output['card_desc'];			
 	}
-	echo "\",";	
-	if ($output['card_estimate'] <> '') {
-		echo $output['card_estimate'];
+	$csv_card_output .= "\",";	
+	if (isset($output['card_estimate']) && $output['card_estimate'] != '') {
+		$csv_card_output .= $output['card_estimate'];
 	}
-	echo PHP_EOL;
+	$csv_card_output .= PHP_EOL;
+
+	echo $csv_card_output;
 
 }
 ?>
