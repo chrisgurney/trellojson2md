@@ -3,10 +3,10 @@
 //
 // note: turning off bold titles allows copy/paste in to JIRA easier
 
-const OUTPUT_TO_FILES = TRUE;
+const OUTPUT_CARD_FILES = TRUE;
 const OUTPUT_PATH = './output/';
 
-const FORMAT_BOLD_TITLES = TRUE;
+const FORMAT_BOLD_TITLES = FALSE;
 const FORMAT_AS_CSV = FALSE;
 const SKIP_HYPHENS = FALSE;
 
@@ -153,16 +153,15 @@ function output_txt_title($output) {
 
 function output_txt_card($output) {
 
-	global $H2_USED;
-
 	$txt_card_output = '';
 
 	if (FORMAT_BOLD_TITLES == TRUE) {
 		$txt_card_output .= '## ';
 	}
 
-	if (!OUTPUT_TO_FILES) {
-		echo $output['card_name'].PHP_EOL.PHP_EOL;
+	// output URLs if they're used as card titles, so we don't lose them when we re-format the filename
+	if (!OUTPUT_CARD_FILES || str_starts_with($output['card_name'], 'http')) {
+		$txt_card_output .= $output['card_name'].PHP_EOL.PHP_EOL;
 	}
 
 	if (sizeof($output['labels']) > 0) {
@@ -198,7 +197,7 @@ function output_txt_card($output) {
 		$txt_card_output .= "Estimate: ".$output['card_estimate'].PHP_EOL;
 	}
 
-	if (OUTPUT_TO_FILES) {
+	if (OUTPUT_CARD_FILES) {
 		$card_filename = $output['card_name'];
 		$card_filename = str_replace(array('\\','/','#',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
 		$card_filename = str_replace('[','(',$card_filename);
