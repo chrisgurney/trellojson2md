@@ -200,7 +200,9 @@ function output_txt_card($output) {
 
 	if (OUTPUT_TO_FILES) {
 		$card_filename = $output['card_name'];
-		$card_filename = str_replace(array('\\','/',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
+		$card_filename = str_replace(array('\\','/','#',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
+		$card_filename = str_replace('[','(',$card_filename);
+		$card_filename = str_replace(']',')',$card_filename);
 		$card_filename = preg_replace('!\s+!', ' ', $card_filename);
 		$card_filename = trim($card_filename);
 		$card_filename = rtrim($card_filename,'.');
@@ -210,7 +212,7 @@ function output_txt_card($output) {
 			return;
 		}
 
-		echo '[['.$card_filename.']]'.PHP_EOL;
+		echo '- [['.$card_filename.']]'.PHP_EOL;
 
 		$card_file = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
 		fwrite($card_file, $txt_card_output);
