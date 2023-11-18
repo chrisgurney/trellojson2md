@@ -3,8 +3,8 @@
 //
 // note: turning off bold titles allows copy/paste in to JIRA easier
 
-const OUTPUT_BOLD_TITLES = TRUE;
-const OUTPUT_CSV = FALSE;
+const FORMAT_BOLD_TITLES = TRUE;
+const FORMAT_AS_CSV = FALSE;
 const SKIP_HYPHENS = FALSE;
 
 $H2_USED = FALSE;
@@ -78,7 +78,7 @@ foreach ($list_names as $list_id => $list_name) {
 		output_txt_heading($output);
 	}
 	else {
-	 	if (OUTPUT_CSV == FALSE) {
+	 	if (FORMAT_AS_CSV == FALSE) {
 		 	output_txt_title($output);
 		}
 	}
@@ -98,7 +98,7 @@ foreach ($list_names as $list_id => $list_name) {
 				$output['card_estimate'] = $card_fields['fields']['u6g4FEpY-jHCRmY'];
 			 }
 			 
-			 if (OUTPUT_CSV == TRUE) {
+			 if (FORMAT_AS_CSV == TRUE) {
 				output_csv_card($output);
 			 }
 			 else {
@@ -119,7 +119,7 @@ function output_txt_heading($output) {
 
 	global $H2_USED;
 
-	if (OUTPUT_BOLD_TITLES == TRUE) {
+	if (FORMAT_BOLD_TITLES == TRUE) {
 		echo '# '.$output['list_name'];
 	}
 	else {
@@ -140,7 +140,7 @@ function output_txt_title($output) {
 		echo PHP_EOL.PHP_EOL;
 	}
 	
-	if (OUTPUT_BOLD_TITLES == TRUE) {
+	if (FORMAT_BOLD_TITLES == TRUE) {
 		echo '# ';
 	}
 	echo $output['list_name'];
@@ -157,7 +157,7 @@ function output_txt_card($output) {
 
 	$txt_card_output = '';
 
-	if (OUTPUT_BOLD_TITLES == TRUE) {
+	if (FORMAT_BOLD_TITLES == TRUE) {
 		$txt_card_output .= '## ';
 	}
 
