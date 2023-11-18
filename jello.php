@@ -3,6 +3,9 @@
 //
 // note: turning off bold titles allows copy/paste in to JIRA easier
 
+const OUTPUT_TO_FILES = TRUE;
+const OUTPUT_PATH = './output/';
+
 const FORMAT_BOLD_TITLES = TRUE;
 const FORMAT_AS_CSV = FALSE;
 const SKIP_HYPHENS = FALSE;
@@ -78,8 +81,8 @@ foreach ($list_names as $list_id => $list_name) {
 		output_txt_heading($output);
 	}
 	else {
-	 	if (FORMAT_AS_CSV == FALSE) {
-		 	output_txt_title($output);
+		if (FORMAT_AS_CSV == FALSE) {
+			output_txt_title($output);
 		}
 	}
 
@@ -102,9 +105,7 @@ foreach ($list_names as $list_id => $list_name) {
 				output_csv_card($output);
 			 }
 			 else {
-				 output_txt_card($output);
-				 // TODO: output for single file mode only
-				 echo '---'.PHP_EOL.PHP_EOL;
+				output_txt_card($output);
 			 }
 				  
 		}
@@ -136,8 +137,7 @@ function output_txt_title($output) {
 	global $H2_USED;
 
 	if ($H2_USED) {
-		echo '---------------';	
-		echo PHP_EOL.PHP_EOL;
+		echo PHP_EOL.'---'.PHP_EOL.PHP_EOL;
 	}
 	
 	if (FORMAT_BOLD_TITLES == TRUE) {
@@ -161,7 +161,9 @@ function output_txt_card($output) {
 		$txt_card_output .= '## ';
 	}
 
-	echo $output['card_name'].PHP_EOL.PHP_EOL;
+	if (!OUTPUT_TO_FILES) {
+		echo $output['card_name'].PHP_EOL.PHP_EOL;
+	}
 
 	if (sizeof($output['labels']) > 0) {
 		$labels_text = '';
@@ -196,7 +198,28 @@ function output_txt_card($output) {
 		$txt_card_output .= "Estimate: ".$output['card_estimate'].PHP_EOL;
 	}
 
-	echo $txt_card_output;
+	if (OUTPUT_TO_FILES) {
+		$card_filename = $output['card_name'];
+		$card_filename = str_replace(array('\\','/',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
+		$card_filename = preg_replace('!\s+!', ' ', $card_filename);
+		$card_filename = trim($card_filename);
+		$card_filename = rtrim($card_filename,'.');
+		$card_filepath = OUTPUT_PATH.$card_filename.'.md';
+
+		if ($card_filename == '---') {
+			return;
+		}
+
+		echo '[['.$card_filename.']]'.PHP_EOL;
+
+		$card_file = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
+		fwrite($card_file, $txt_card_output);
+		fclose($card_file);
+	}
+	else {
+		$txt_card_output .= '---'.PHP_EOL.PHP_EOL;
+		echo $txt_card_output;
+	}
 
 }
 
