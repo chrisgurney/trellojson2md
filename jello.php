@@ -3,8 +3,8 @@
 //
 // note: turning off bold titles allows copy/paste in to JIRA easier
 
-const OUTPUT_LIST_FILES = FALSE;
-const OUTPUT_CARD_FILES = TRUE;
+const OUTPUT_LIST_FILES = TRUE;
+const OUTPUT_CARD_FILES = FALSE;
 const OUTPUT_PATH = './output/';
 
 const FORMAT_BOLD_TITLES = FALSE;
@@ -77,18 +77,26 @@ foreach ($list_names as $list_id => $list_name) {
 	// continue;
 
 	if (OUTPUT_LIST_FILES) {
+		$list_filename = get_filename($output['list_name']);
+		$list_filepath = OUTPUT_PATH.$list_filename.'.md';
 
+		echo '- [['.$list_filename.']]'.PHP_EOL;
+
+		if (isset($OUTPUT_FILE) && is_resource($OUTPUT_FILE)) {
+			fclose($OUTPUT_FILE);
+		}
+		$OUTPUT_FILE = fopen($list_filepath, "w") or die("Unable to open file: ".$list_filepath);		
 	}
 	else {
 		// treat list names that begin with * as heading 1
 		// TODO: think of less hacky way of doing this
 		if (strpos($list_name, '*') === 0) {
 			$output['list_name'] = substr($list_name, 1);
-			output_txt_heading($output);
+			echo format_txt_heading($output);
 		}
 		else {
 			if (FORMAT_AS_CSV == FALSE) {
-				output_txt_title($output);
+				echo format_txt_title($output);
 			}
 		}
 	}
@@ -127,6 +135,10 @@ foreach ($list_names as $list_id => $list_name) {
 					fwrite($OUTPUT_FILE, $txt_card);
 					fclose($OUTPUT_FILE);
 				}
+				else if (OUTPUT_LIST_FILES) {
+					fwrite($OUTPUT_FILE, $txt_card);
+					fwrite($OUTPUT_FILE, '---'.PHP_EOL.PHP_EOL);
+				}
 				else {
 					$txt_card .= '---'.PHP_EOL.PHP_EOL;
 					echo $txt_card;
@@ -135,44 +147,51 @@ foreach ($list_names as $list_id => $list_name) {
 				  
 		}
 
-	} 
+	}
+	
+	if (OUTPUT_LIST_FILES) {
+		fclose($OUTPUT_FILE);
+	}
 	
 }
 
 // -------------------------------------------------------------
 
-function output_txt_heading($output) {
+function format_txt_heading($output) {
 
 	global $H2_USED;
 
+	$txt_output = '';
+
 	if (FORMAT_BOLD_TITLES == TRUE) {
-		echo '# '.$output['list_name'];
+		$txt_output .= '# ';
 	}
-	else {
-		echo $output['list_name'];
-	}
- 	echo PHP_EOL.PHP_EOL;
+	$txt_output .= $output['list_name'].PHP_EOL.PHP_EOL;
 
  	$H2_USED = FALSE;
 
+	return $txt_output;
+
 }
 
-function output_txt_title($output) {
+function format_txt_title($output) {
 
 	global $H2_USED;
 
-	if ($H2_USED) {
-		echo PHP_EOL.'---'.PHP_EOL.PHP_EOL;
-	}
-	
-	if (FORMAT_BOLD_TITLES == TRUE) {
-		echo '# ';
-	}
-	echo $output['list_name'];
+	$txt_output = '';
 
- 	echo PHP_EOL.PHP_EOL;
+	if ($H2_USED) {
+		$txt_output .= PHP_EOL.'---'.PHP_EOL.PHP_EOL;
+	}
+
+	if (FORMAT_BOLD_TITLES == TRUE) {
+		$txt_output .= '# ';
+	}
+	$txt_output .= $output['list_name'].PHP_EOL.PHP_EOL;
 
  	$H2_USED = TRUE;
+
+	return $txt_output;
 
 }
 
