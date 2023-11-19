@@ -3,6 +3,7 @@
 //
 // note: turning off bold titles allows copy/paste in to JIRA easier
 
+const OUTPUT_LIST_FILES = FALSE;
 const OUTPUT_CARD_FILES = TRUE;
 const OUTPUT_PATH = './output/';
 
@@ -11,6 +12,7 @@ const FORMAT_AS_CSV = FALSE;
 const SKIP_HYPHENS = FALSE;
 
 $H2_USED = FALSE;
+$OUTPUT_FILE;
 
 //
 // read JSON file
@@ -74,15 +76,20 @@ foreach ($list_names as $list_id => $list_name) {
 	// echo $list_name."\n\n";
 	// continue;
 
-	// treat list names that begin with * as heading 1
-	// TODO: think of less hacky way of doing this
-	if (strpos($list_name, '*') === 0) {
-		$output['list_name'] = substr($list_name, 1);
-		output_txt_heading($output);
+	if (OUTPUT_LIST_FILES) {
+
 	}
 	else {
-		if (FORMAT_AS_CSV == FALSE) {
-			output_txt_title($output);
+		// treat list names that begin with * as heading 1
+		// TODO: think of less hacky way of doing this
+		if (strpos($list_name, '*') === 0) {
+			$output['list_name'] = substr($list_name, 1);
+			output_txt_heading($output);
+		}
+		else {
+			if (FORMAT_AS_CSV == FALSE) {
+				output_txt_title($output);
+			}
 		}
 	}
 
@@ -153,6 +160,8 @@ function output_txt_title($output) {
 
 function output_txt_card($output) {
 
+	global $OUTPUT_FILE;
+
 	$txt_card_output = '';
 
 	if (FORMAT_BOLD_TITLES == TRUE) {
@@ -198,13 +207,7 @@ function output_txt_card($output) {
 	}
 
 	if (OUTPUT_CARD_FILES) {
-		$card_filename = $output['card_name'];
-		$card_filename = str_replace(array('\\','/','#',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
-		$card_filename = str_replace('[','(',$card_filename);
-		$card_filename = str_replace(']',')',$card_filename);
-		$card_filename = preg_replace('!\s+!', ' ', $card_filename);
-		$card_filename = trim($card_filename);
-		$card_filename = rtrim($card_filename,'.');
+		$card_filename = get_filename($output['card_name']);
 		$card_filepath = OUTPUT_PATH.$card_filename.'.md';
 
 		if ($card_filename == '---') {
@@ -213,9 +216,9 @@ function output_txt_card($output) {
 
 		echo '- [['.$card_filename.']]'.PHP_EOL;
 
-		$card_file = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
-		fwrite($card_file, $txt_card_output);
-		fclose($card_file);
+		$OUTPUT_FILE = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
+		fwrite($OUTPUT_FILE, $txt_card_output);
+		fclose($OUTPUT_FILE);
 	}
 	else {
 		$txt_card_output .= '---'.PHP_EOL.PHP_EOL;
@@ -243,5 +246,16 @@ function output_csv_card($output) {
 
 	echo $csv_card_output;
 
+}
+
+function get_filename($string) {
+	$card_filename = $string;
+	$card_filename = str_replace(array('\\','/','#',':','*','?','"','<','>','|','https','http'),' ',$card_filename);
+	$card_filename = str_replace('[','(',$card_filename);
+	$card_filename = str_replace(']',')',$card_filename);
+	$card_filename = preg_replace('!\s+!', ' ', $card_filename);
+	$card_filename = trim($card_filename);
+	$card_filename = rtrim($card_filename,'.');
+	return $card_filename;
 }
 ?>
