@@ -112,7 +112,25 @@ foreach ($list_names as $list_id => $list_name) {
 				output_csv_card($output);
 			 }
 			 else {
-				output_txt_card($output);
+				$txt_card = format_txt_card($output);
+				if (OUTPUT_CARD_FILES) {
+					$card_filename = get_filename($output['card_name']);
+					$card_filepath = OUTPUT_PATH.$card_filename.'.md';
+			
+					if ($card_filename == '---') {
+						continue;
+					}
+			
+					echo '- [['.$card_filename.']]'.PHP_EOL;
+			
+					$OUTPUT_FILE = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
+					fwrite($OUTPUT_FILE, $txt_card);
+					fclose($OUTPUT_FILE);
+				}
+				else {
+					$txt_card .= '---'.PHP_EOL.PHP_EOL;
+					echo $txt_card;
+				}
 			 }
 				  
 		}
@@ -158,9 +176,7 @@ function output_txt_title($output) {
 
 }
 
-function output_txt_card($output) {
-
-	global $OUTPUT_FILE;
+function format_txt_card($output) {
 
 	$txt_card_output = '';
 
@@ -206,24 +222,7 @@ function output_txt_card($output) {
 		$txt_card_output .= "Estimate: ".$output['card_estimate'].PHP_EOL;
 	}
 
-	if (OUTPUT_CARD_FILES) {
-		$card_filename = get_filename($output['card_name']);
-		$card_filepath = OUTPUT_PATH.$card_filename.'.md';
-
-		if ($card_filename == '---') {
-			return;
-		}
-
-		echo '- [['.$card_filename.']]'.PHP_EOL;
-
-		$OUTPUT_FILE = fopen($card_filepath, "w") or die("Unable to open file: ".$card_filepath);
-		fwrite($OUTPUT_FILE, $txt_card_output);
-		fclose($OUTPUT_FILE);
-	}
-	else {
-		$txt_card_output .= '---'.PHP_EOL.PHP_EOL;
-		echo $txt_card_output;
-	}
+	return $txt_card_output;
 
 }
 
