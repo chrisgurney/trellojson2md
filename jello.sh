@@ -1,15 +1,16 @@
 # Requires PHP
-# 
-# TODO - Check if pandoc is installed; error message otherwise
+
+echo -n 'Converting Trello JSON to Markdown... '
+php jello.php trello_exported.json > out_trello.md
+echo 'Done!'
+
+# Pandoc's required after this point.
+# Check if pandoc is installed; error message otherwise
 # if hash pandoc 2>/dev/null; then
 #     we've got pandoc
 #   else
 #     echo 'Requires pandoc - http://pandoc.org/'
 #   fi
-
-echo -n 'Converting Trello JSON to Markdown... '
-php jello.php _examples/jyTQlNXR.json > out_trello.md
-echo 'Done!'
 
 echo -n 'Converting Trello Markdown to Word... '
 pandoc out_trello.md -f markdown -t docx --reference-docx jello_reference.docx -o out_doc.docx
