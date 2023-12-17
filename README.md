@@ -1,17 +1,19 @@
-# TRELLO2DOCJIRA
+# trellojson2md
 
-Trello to Word doc and markdown text (for pasting into JIRA). YMMV.
+PHP script that converts Trello's exported JSON to markdown text.
+
+Included script examples then convert markdown to Word (via Pandoc), or Jira's flavor of markdown (Textile), though the latter may be now out of date.
 
 ## Installation
 
 This tool requires:
 
 * PHP
-* pandoc - Download from <http://pandoc.org/>
+* [pandoc](https://pandoc.org/) - Optional, to convert markdown to Word.
 
 ## Usage
 
-Modify the `jello_reference.docx` to adjust how you want Word's headings, colors, and headers/footers to look. 
+### Trello JSON to Markdown
 
 1. Manually export your Trello board as JSON:
     Trello > Menu > More > Print and Export > Export as JSON
@@ -21,8 +23,17 @@ Modify the `jello_reference.docx` to adjust how you want Word's headings, colors
 Notes:
 
 * Ignores any Trello lists beginning with a hyphen (-).
+
+### Markdown to Word
+
+Modify the `jello_reference.docx` to adjust how you want Word's headings, colors, and headers/footers to look. 
+
+Review the relevant lines in `jello.sh` and run.
+
+### Markdown to Jira (Texttile)
+
+Review the relevant lines in `jello.sh` and run.
+
+Notes:
+
 * Turning off bold titles allows copy/paste into JIRA easier.
-
-# Future
-
-* Remove need for shell script (see _jira2doc_).
